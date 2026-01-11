@@ -37,6 +37,8 @@ export function reduceEvent(
     case "tree":
     case "graph":
     case "dpTable":
+    case "stack":
+    case "queue":
       return {
         ...state,
         visual: event,

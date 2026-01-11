@@ -26,11 +26,11 @@ export default function VisualRenderer({
       case "list":
         return <LinkedListView model={visual} pointers={pointers} />;
       case "tree":
-        return <TreeView model={visual} />;
+        return <TreeView model={visual} pointers={pointers} />;
       case "graph":
-        return <GraphView model={visual} />;
+        return <GraphView model={visual} pointers={pointers} />;
       case "dpTable":
-        return <DPTableView model={visual} />;
+        return <DPTableView model={visual} pointers={pointers} />;
       default:
         return null;
     }

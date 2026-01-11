@@ -44,30 +44,43 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 
 export default function GraphView({
   model,
+  pointers = {},
 }: {
   model: Extract<VisualModel, { type: "graph" }>;
+  pointers?: Record<string, string | null>;
 }) {
   const { nodes: dataNodes, edges: dataEdges } = model;
 
   const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(() => {
-    const rawNodes: Node[] = dataNodes.map((label) => ({
-      id: label,
-      data: { label: label },
-      position: { x: 0, y: 0 },
-      style: {
-        background: "#111827",
-        color: "#E5E7EB",
-        border: "1px solid #F59E0B", // Warning color for generic graphs
-        borderRadius: "50%",
-        width: 50,
-        height: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "12px",
-        fontFamily: "monospace",
-      },
-    }));
+    const rawNodes: Node[] = dataNodes.map((label) => {
+      // Logic for active pointers
+      const activePointers = Object.entries(pointers)
+        .filter(([_, target]) => target === label)
+        .map(([name]) => name);
+
+      const isFocused = activePointers.length > 0;
+      
+      return {
+        id: label,
+        data: { label: label },
+        position: { x: 0, y: 0 },
+        style: {
+          background: isFocused ? "#1F2937" : "#111827",
+          color: isFocused ? "#F59E0B" : "#E5E7EB",
+          border: isFocused ? "2px solid #F59E0B" : "1px solid #F59E0B",
+          borderRadius: "50%",
+          width: 50,
+          height: 50,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "12px",
+          fontFamily: "monospace",
+          boxShadow: isFocused ? "0 0 15px rgba(245, 158, 11, 0.5)" : "none",
+          transition: "all 0.3s ease"
+        },
+      };
+    });
 
     const rawEdges: Edge[] = dataEdges.map(([source, target], i) => ({
       id: `e-${i}`,

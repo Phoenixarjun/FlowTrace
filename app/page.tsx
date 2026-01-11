@@ -2,10 +2,13 @@ import Link from "next/link";
 
 const CATEGORIES = [
   { id: "linked-list", name: "Linked List", description: "Learn nodes, pointers, and traversal." },
+  { id: "stack", name: "Stack", description: "LIFO principle: Push and Pop." },
+  { id: "queue", name: "Queue", description: "FIFO principle: Enqueue and Dequeue." },
   { id: "backtracking", name: "Backtracking", description: "Explore recursive search spaces." },
   { id: "trees", name: "Trees", description: "Hierarchical data structures." },
   { id: "graphs", name: "Graphs", description: "Nodes and edges network." },
-  { id: "stack-queue", name: "Stack & Queue", description: "LIFO and FIFO principles." },
+  { id: "trie", name: "Trie", description: "Prefix trees for strings.", isAdvanced: true },
+  { id: "dp", name: "Dynamic Programming", description: "Optimization tables.", isAdvanced: true },
 ];
 
 export default function Home() {
@@ -37,25 +40,23 @@ export default function Home() {
             <Link
               key={cat.id}
               href={`/learn/${cat.id}`}
-              className="group p-6 bg-flow-surface border border-white/5 rounded-xl hover:border-flow-accent-primary transition-all hover:bg-white/[0.02]"
+              className={`group p-6 bg-flow-surface border border-white/5 rounded-xl transition-all hover:bg-white/[0.02] ${
+                cat.isAdvanced 
+                  ? "border-indigo-500/30 hover:border-indigo-500" 
+                  : "hover:border-flow-accent-primary"
+              }`}
             >
-              <h3 className="text-xl font-semibold text-flow-text group-hover:text-flow-accent-primary mb-2">
+              <h3 className={`text-xl font-semibold mb-2 group-hover:text-flow-text ${
+                cat.isAdvanced ? "text-indigo-400 group-hover:text-indigo-300" : "text-flow-text group-hover:text-flow-accent-primary"
+              }`}>
                 {cat.name}
+                {cat.isAdvanced && <span className="ml-2 text-xs bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded">Advanced</span>}
               </h3>
               <p className="text-flow-text-muted text-sm">
                 {cat.description}
               </p>
             </Link>
           ))}
-          {/* Coming Soon */}
-          <div className="p-6 bg-flow-surface border border-white/5 rounded-xl opacity-50 cursor-not-allowed">
-            <h3 className="text-xl font-semibold text-flow-text-muted mb-2">
-              Dynamic Programming
-            </h3>
-            <p className="text-flow-text-muted text-sm">
-              Coming soon.
-            </p>
-          </div>
         </div>
       </section>
     </main>

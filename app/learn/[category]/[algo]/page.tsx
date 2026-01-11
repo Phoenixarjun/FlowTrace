@@ -16,12 +16,13 @@ const LESSON_MAP: Record<string, Lesson> = {
   "linear-search": LINEAR_SEARCH_LESSON,
 };
 
-export default function LessonPlayerPage({
+export default async function LessonPlayerPage({
   params,
 }: {
-  params: { category: string; algo: string };
+  params: Promise<{ category: string; algo: string }>;
 }) {
-  const lesson = LESSON_MAP[params.algo];
+  const { category, algo } = await params;
+  const lesson = LESSON_MAP[algo];
 
   if (!lesson) {
     return <div className="p-12 text-flow-text">Lesson not found.</div>;
@@ -89,7 +90,7 @@ export default function LessonPlayerPage({
       {/* Header */}
       <header className="px-6 py-4 border-b border-white/5 bg-flow-surface flex items-center justify-between">
         <div className="flex items-center gap-4">
-             <Link href={`/learn/${params.category}`} className="text-flow-text-muted hover:text-flow-text text-sm">
+             <Link href={`/learn/${category}`} className="text-flow-text-muted hover:text-flow-text text-sm">
                 ← Back
             </Link>
             <h1 className="text-xl font-bold text-flow-text">

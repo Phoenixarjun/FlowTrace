@@ -18,6 +18,14 @@ export type VisualModel =
       rows: number;
       cols: number;
       values: number[][];
+    }
+  | {
+      type: "stack";
+      elements: string[];
+    }
+  | {
+      type: "queue";
+      elements: string[];
     };
 
 export type TraceEvent =

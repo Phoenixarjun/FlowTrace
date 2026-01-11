@@ -43,30 +43,43 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 
 export default function TreeView({
   model,
+  pointers = {},
 }: {
   model: Extract<VisualModel, { type: "tree" }>;
+  pointers?: Record<string, string | null>;
 }) {
   const { nodes: dataNodes } = model;
 
   const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(() => {
-    const rawNodes: Node[] = dataNodes.map((n) => ({
-      id: n.id,
-      data: { label: n.id },
-      position: { x: 0, y: 0 }, // Laid out by dagre
-      style: {
-        background: "#111827",
-        color: "#E5E7EB",
-        border: "1px solid #22C55E", // Secondary accent for trees
-        borderRadius: "50%",
-        width: 50,
-        height: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "12px",
-        fontFamily: "monospace",
-      },
-    }));
+    const rawNodes: Node[] = dataNodes.map((n) => {
+      // Logic for active pointers
+      const activePointers = Object.entries(pointers)
+        .filter(([_, target]) => target === n.id)
+        .map(([name]) => name);
+
+      const isFocused = activePointers.length > 0;
+      
+      return {
+        id: n.id,
+        data: { label: n.id },
+        position: { x: 0, y: 0 }, // Laid out by dagre
+        style: {
+          background: isFocused ? "#1F2937" : "#111827",
+          color: isFocused ? "#22C55E" : "#E5E7EB",
+          border: isFocused ? "2px solid #22C55E" : "1px solid #22C55E",
+          borderRadius: "50%",
+          width: 50,
+          height: 50,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "12px",
+          fontFamily: "monospace",
+          boxShadow: isFocused ? "0 0 15px rgba(34, 197, 94, 0.5)" : "none",
+          transition: "all 0.3s ease"
+        },
+      };
+    });
 
     const rawEdges: Edge[] = [];
     dataNodes.forEach((parent) => {
