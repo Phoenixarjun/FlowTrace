@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { TraceEvent, ExecutionState } from "@/types/trace";
 import { initialExecutionState } from "@/lib/initialState";
 import { reduceEvent } from "@/lib/traceReducer";
 import ExecutionPanel from "@/components/ExecutionPanel";
 import TraceInput from "@/components/TraceInput";
+import { DFS_TRACE } from "@/lib/demoTraces";
 
 // Default demo trace
-const DEFAULT_TRACE: TraceEvent[] = [
+const DEMO_TRACE: TraceEvent[] = [
   { type: "call", fn: "main" },
   { type: "state", key: "x", value: 10 },
   { type: "call", fn: "helper" },
@@ -18,12 +20,22 @@ const DEFAULT_TRACE: TraceEvent[] = [
   { type: "call", fn: "finish" },
 ];
 
-export default function PlaygroundPage() {
-  const [trace, setTrace] = useState<TraceEvent[]>(DEFAULT_TRACE);
+function PlaygroundContent() {
+  const searchParams = useSearchParams();
+  const [trace, setTrace] = useState<TraceEvent[]>(DEMO_TRACE);
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [executionState, setExecutionState] = useState<ExecutionState>(
     initialExecutionState
   );
+
+  useEffect(() => {
+    const demo = searchParams.get("demo");
+    if (demo === "dfs") {
+      setTrace(DFS_TRACE);
+      setExecutionState(initialExecutionState);
+      setCurrentStep(-1);
+    }
+  }, [searchParams]);
 
   const handleNext = () => {
     if (currentStep < trace.length - 1) {
@@ -52,7 +64,7 @@ export default function PlaygroundPage() {
           <div>
             <h1 className="text-4xl font-bold text-flow-text mb-2">Playground</h1>
             <p className="text-flow-text-muted">
-              Runtime Injection & Visualization (Phase 5)
+              Runtime Injection & Visualization
             </p>
           </div>
           <div className="flex gap-4">
@@ -98,6 +110,14 @@ export default function PlaygroundPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function PlaygroundPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-flow-text text-center">Loading...</div>}>
+      <PlaygroundContent />
+    </Suspense>
   );
 }
 
