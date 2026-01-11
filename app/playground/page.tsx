@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TraceEvent, ExecutionState } from "@/types/trace";
 import { initialExecutionState } from "@/lib/initialState";
 import { reduceEvent } from "@/lib/traceReducer";
+import ExecutionPanel from "@/components/ExecutionPanel";
 
 // Hardcoded demo trace
 const DEMO_TRACE: TraceEvent[] = [
@@ -12,6 +13,8 @@ const DEMO_TRACE: TraceEvent[] = [
   { type: "call", fn: "helper" },
   { type: "pointer", from: "head", to: "node1" },
   { type: "return", fn: "helper" },
+  { type: "state", key: "x", value: 20 },
+  { type: "call", fn: "finish" },
 ];
 
 export default function PlaygroundPage() {
@@ -24,10 +27,7 @@ export default function PlaygroundPage() {
     if (currentStep < DEMO_TRACE.length - 1) {
       const nextStepIndex = currentStep + 1;
       const event = DEMO_TRACE[nextStepIndex];
-      
-      // Compute new state using the pure reducer
       const newState = reduceEvent(executionState, event);
-      
       setExecutionState(newState);
       setCurrentStep(nextStepIndex);
     }
@@ -40,55 +40,52 @@ export default function PlaygroundPage() {
 
   return (
     <main className="flex-1 p-12">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="border-b border-white/5 pb-6">
-          <h1 className="text-4xl font-bold text-flow-text mb-2">Playground</h1>
-          <p className="text-flow-text-muted">
-            Phase 3 Debugger (No Visuals)
-          </p>
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex items-center justify-between border-b border-white/5 pb-6">
+          <div>
+            <h1 className="text-4xl font-bold text-flow-text mb-2">Playground</h1>
+            <p className="text-flow-text-muted">
+              Visual Execution Primitives (Phase 4)
+            </p>
+          </div>
+          <div className="flex gap-4">
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 bg-flow-surface border border-white/10 text-flow-text rounded hover:bg-white/5 disabled:opacity-50"
+              disabled={currentStep === -1}
+            >
+              Reset
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentStep >= DEMO_TRACE.length - 1}
+              className="px-4 py-2 bg-flow-accent-primary text-black font-semibold rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Step Next
+            </button>
+          </div>
         </div>
 
-        <div className="flex gap-4">
-          <button
-            onClick={handleNext}
-            disabled={currentStep >= DEMO_TRACE.length - 1}
-            className="px-4 py-2 bg-flow-accent-primary text-black font-semibold rounded disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Step Next
-          </button>
-          <button
-            onClick={handleReset}
-            className="px-4 py-2 bg-flow-surface border border-white/10 text-flow-text rounded hover:bg-white/5"
-          >
-            Reset
-          </button>
-        </div>
+        <ExecutionPanel state={executionState} />
 
-        <div className="grid grid-cols-2 gap-8">
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-flow-text">Trace Events</h2>
-            <div className="bg-flow-surface p-4 rounded border border-white/5 font-mono text-sm text-flow-text-muted h-64 overflow-y-auto">
-              {DEMO_TRACE.map((event, index) => (
-                <div
-                  key={index}
-                  className={`p-1 ${
-                    index === currentStep
-                      ? "bg-flow-accent-secondary/20 text-flow-accent-secondary"
-                      : ""
-                  }`}
-                >
-                  [{index}] {JSON.stringify(event)}
-                </div>
-              ))}
+        <div className="mt-8">
+            <h3 className="text-flow-text-muted text-sm font-semibold mb-3 uppercase tracking-wider">
+                Event Log
+            </h3>
+            <div className="bg-flow-surface p-4 rounded border border-white/5 font-mono text-sm text-flow-text-muted h-32 overflow-y-auto">
+                {DEMO_TRACE.map((event, index) => (
+                    <div
+                        key={index}
+                        className={`p-1 ${
+                            index === currentStep
+                                ? "bg-flow-accent-primary/10 text-flow-accent-primary"
+                                : "opacity-50"
+                        }`}
+                    >
+                        [{index}] {event.type} {event.type === 'call' || event.type === 'return' ? event.fn : ''}
+                    </div>
+                ))}
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-flow-text">Execution State</h2>
-            <pre className="bg-flow-surface p-4 rounded border border-white/5 font-mono text-sm text-flow-accent-primary h-64 overflow-y-auto">
-              {JSON.stringify(executionState, null, 2)}
-            </pre>
-          </div>
         </div>
       </div>
     </main>
