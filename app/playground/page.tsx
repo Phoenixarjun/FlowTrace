@@ -7,6 +7,7 @@ import { initialExecutionState } from "@/lib/initialState";
 import { reduceEvent } from "@/lib/traceReducer";
 import ExecutionPanel from "@/components/ExecutionPanel";
 import TraceInput from "@/components/TraceInput";
+import VisualRenderer from "@/components/visuals/VisualRenderer";
 import { DFS_TRACE } from "@/lib/demoTraces";
 
 // Default demo trace
@@ -88,6 +89,10 @@ function PlaygroundContent() {
         <TraceInput onLoad={handleLoadTrace} />
 
         <ExecutionPanel state={executionState} />
+
+        <div className="mt-8">
+            <VisualRenderer visual={executionState.visual} />
+        </div>
 
         <div className="mt-8">
             <h3 className="text-flow-text-muted text-sm font-semibold mb-3 uppercase tracking-wider">

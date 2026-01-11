@@ -33,6 +33,14 @@ export function reduceEvent(
           [event.from]: event.to,
         },
       };
+    case "list":
+    case "tree":
+    case "graph":
+    case "dpTable":
+      return {
+        ...state,
+        visual: event,
+      };
     default:
       return state;
   }

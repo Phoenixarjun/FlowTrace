@@ -1,14 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-flow-bg: #0B0F14;
-  --color-flow-surface: #111827;
-  --color-flow-accent-primary: #38BDF8;
-  --color-flow-accent-secondary: #22C55E;
-  --color-flow-warning: #F59E0B;
-  --color-flow-error: #EF4444;
-  --color-flow-text: #E5E7EB;
-  --color-flow-text-muted: #9CA3AF;
+  --color-flow-bg: var(--flow-bg);
+  --color-flow-surface: var(--flow-surface);
+  --color-flow-accent-primary: var(--flow-accent-primary);
+  --color-flow-accent-secondary: var(--flow-accent-secondary);
+  --color-flow-warning: var(--flow-warning);
+  --color-flow-error: var(--flow-error);
+  --color-flow-text: var(--flow-text);
+  --color-flow-text-muted: var(--flow-text-muted);
+}
+
+:root {
+  --flow-bg: #0B0F14;
+  --flow-surface: #111827;
+  --flow-accent-primary: #38BDF8;
+  --flow-accent-secondary: #22C55E;
+  --flow-warning: #F59E0B;
+  --flow-error: #EF4444;
+  --flow-text: #E5E7EB;
+  --flow-text-muted: #9CA3AF;
+  
+  color-scheme: dark;
 }
 
 /* Global Reset & Base Styles */

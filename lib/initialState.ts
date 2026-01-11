@@ -4,4 +4,5 @@ export const initialExecutionState: ExecutionState = {
   stack: [],
   state: {},
   pointers: {},
+  visual: null,
 };
